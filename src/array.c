@@ -92,7 +92,7 @@ static PyObject* py_array_setitem(array* self, PyObject* args) {
 
 static PyObject* array_iter(array* self) {
 	self->current = 0;
-	Py_INCREF(self);
+	Py_INCREF((PyObject*) self);
 	return (PyObject*) self;
 }
 
@@ -107,7 +107,6 @@ static PyObject* array_iternext(array* self) {
 	}
 
 	self->current = 0;
-	PyErr_SetNone(PyExc_StopIteration);
 	return NULL;
 }
 
@@ -120,12 +119,6 @@ static PyMethodDef array_methods[] = {
 	{ "get", (PyCFunction) py_array_getitem, METH_VARARGS, "Returns the element in the ith position of the array, None if are not setted" },
 	{ "set", (PyCFunction) py_array_setitem, METH_VARARGS, "Set the ith element of the array to the passed object" },
 	{ NULL, NULL, 0, NULL }
-};
-
-static PySequenceMethods array_assequence_methods = {
-	.sq_item = (ssizeargfunc) py_array_getitem,
-	.sq_length = (lenfunc) py_array_size,
-	.sq_ass_item = (ssizeobjargproc) py_array_setitem
 };
 
 static PyTypeObject arrayType = {
@@ -141,5 +134,4 @@ static PyTypeObject arrayType = {
 	.tp_methods = array_methods,
 	.tp_iter = (getiterfunc) array_iter,
 	.tp_iternext = (iternextfunc) array_iternext,
-	.tp_as_sequence = &array_assequence_methods
 };
