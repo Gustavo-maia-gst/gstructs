@@ -5,16 +5,6 @@ typedef struct {
 	long current;
 } array;
 
-PyObject* c_array_getitem(array* self, long index) {
-	return self->data[index];
-}
-
-PyObject* c_array_setitem(array* self, long index, PyObject* obj) {
-	PyObject* old_obj = self->data[index];
-	self->data[index] = obj;
-	return old_obj;
-}
-
 static PyObject* array_new(PyTypeObject* type) {
 	array* self;
 	self = (array*) type->tp_alloc(type, 0);
@@ -51,43 +41,39 @@ static void array_dealloc(array* self) {
 	Py_TYPE(self)->tp_free((PyObject*) self);
 }
 
-static PyObject* py_array_getitem(array* self, PyObject* args) {
-	long index;
-	if (!PyArg_ParseTuple(args, "l", &index)) {
-		PyErr_SetString(PyExc_ValueError, "Index should be an integer");
-		return NULL;
-	}
+static PyObject* array_getitem(array* self, Py_ssize_t s_index) {
+	long index = (long) s_index;
 
 	if (INVALID_INDEX(index, self->size)) {
 		PyErr_SetString(PyExc_IndexError, "Index out of bounds");
 		return NULL;
 	}
 
-	PyObject* obj = c_array_getitem(self, index);
-	if (obj == NULL) {
-		Py_RETURN_NONE;
-	}
+	PyObject* obj = self->data[index];
+	if (obj == NULL) obj = Py_None;
 
 	Py_INCREF(obj);
 	return obj;
 }
 
-static PyObject* py_array_setitem(array* self, PyObject* args) {
-	PyObject* obj;
-	long index;
-	if (!PyArg_ParseTuple(args, "Ol", &obj, &index)) {
-		PyErr_SetString(PyExc_ValueError, "You need to pass the object and the index");
-		return NULL;
+static int array_setitem(array* self, Py_ssize_t s_index, PyObject* obj) {
+	long index = (long) s_index;
+
+	if (obj == NULL) {
+		Py_XDECREF(self->data[index]);
+		self->data[index] = NULL;
+		return 0;
 	}
 
 	if (INVALID_INDEX(index, self->size)) {
 		PyErr_SetString(PyExc_IndexError, "Index out of bounds");
-		return NULL;
+		return -1;
 	}
 
-	Py_XDECREF(c_array_setitem(self, index, obj));
+	Py_XDECREF(self->data[index]);
 	Py_INCREF(obj);
-	Py_RETURN_NONE;
+	self->data[index] = obj;
+	return 0;
 }
 
 static PyObject* array_iter(array* self) {
@@ -110,15 +96,18 @@ static PyObject* array_iternext(array* self) {
 	return NULL;
 }
 
-static PyObject* py_array_size(array* self) {
-	return PyLong_FromLong(self->size);
+static Py_ssize_t array_size(array* self) {
+	return (Py_ssize_t) self->size;
 }
 
 static PyMethodDef array_methods[] = {
-	{ "size", (PyCFunction) py_array_size, METH_NOARGS, "Returns the size of the array" },
-	{ "get", (PyCFunction) py_array_getitem, METH_VARARGS, "Returns the element in the ith position of the array, None if are not setted" },
-	{ "set", (PyCFunction) py_array_setitem, METH_VARARGS, "Set the ith element of the array to the passed object" },
 	{ NULL, NULL, 0, NULL }
+};
+
+static PySequenceMethods array_as_sequence_methods = {
+	.sq_length = (lenfunc) array_size,
+	.sq_item = (ssizeargfunc) array_getitem,
+	.sq_ass_item = (ssizeobjargproc) array_setitem,
 };
 
 static PyTypeObject arrayType = {
@@ -134,4 +123,5 @@ static PyTypeObject arrayType = {
 	.tp_methods = array_methods,
 	.tp_iter = (getiterfunc) array_iter,
 	.tp_iternext = (iternextfunc) array_iternext,
+	.tp_as_sequence = &array_as_sequence_methods,
 };
