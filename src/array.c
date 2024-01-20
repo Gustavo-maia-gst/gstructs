@@ -113,7 +113,7 @@ static PySequenceMethods array_as_sequence_methods = {
 static PyTypeObject arrayType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	.tp_name = "gstructs.array",
-	.tp_doc = "Provide high performance array operations",
+	.tp_doc = "Provide low level array operations",
 	.tp_basicsize = sizeof(array),
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,

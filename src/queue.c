@@ -112,7 +112,7 @@ static PyMethodDef queue_methods[] = {
 static PyTypeObject queueType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	.tp_name = "gstructs.queue",
-	.tp_doc = "Provide high performance queue operations",
+	.tp_doc = "Provide low level queue operations",
 	.tp_basicsize = sizeof(queue),
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_DEFAULT,

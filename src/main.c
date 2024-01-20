@@ -10,7 +10,7 @@
 static PyModuleDef gstructs = {
 	PyModuleDef_HEAD_INIT,
 	.m_name = "gstructs",
-	.m_doc = "High performance data structures for python",
+	.m_doc = "Low level data structures for python",
 	.m_size = -1
 };
  

@@ -107,7 +107,7 @@ PyMethodDef stack_methods[] = {
 static PyTypeObject stackType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	.tp_name = "gstructs.stack",
-	.tp_doc = "Provide high performance stack operations",
+	.tp_doc = "Provide low level stack operations",
 	.tp_basicsize = sizeof(stack),
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_DEFAULT,
