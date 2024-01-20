@@ -1,3 +1,5 @@
+LICENSE
+README.md
 setup.py
 gstructs.egg-info/PKG-INFO
 gstructs.egg-info/SOURCES.txt

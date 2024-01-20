@@ -1,8 +1,10 @@
 #include <Python.h>
 #define MEMORY_ERROR PyErr_SetString(PyExc_MemoryError, "Failed to allocate memory"); return NULL
+#define INVALID_INDEX(i, max_i) (i < 0 || i >= max_i)
 
 #include "stack.c"
 #include "queue.c"
+#include "array.c"
 
 
 static PyModuleDef gstructs = {
@@ -21,14 +23,18 @@ PyMODINIT_FUNC PyInit_gstructs(void) {
     if (PyType_Ready(&queueType) < 0) {
 		return NULL;
 	}
+    if (PyType_Ready(&arrayType) < 0) {
+		return NULL;
+	}
 
 	module = PyModule_Create(&gstructs);
 
 	Py_INCREF(&stackType);
 	PyModule_AddObject(module, "stack", (PyObject*) &stackType);
-
 	Py_INCREF(&queueType);
 	PyModule_AddObject(module, "queue", (PyObject*) &queueType);
-	
+	Py_INCREF(&arrayType);
+	PyModule_AddObject(module, "array", (PyObject*) &arrayType);
+
 	return module;
 }

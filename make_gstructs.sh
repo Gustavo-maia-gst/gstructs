@@ -1,2 +1,2 @@
-sudo rm -rf build dist gstructs.egg-info
-sudo python3 setup.py install
+rm -rf build dist gstructs.egg-info
+python setup.py install
