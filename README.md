@@ -1,2 +1,2 @@
 # gstructs
-C extension for python providing high performance data structures.
+C extension for python providing low level data structures.
