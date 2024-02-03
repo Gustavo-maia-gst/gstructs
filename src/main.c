@@ -5,7 +5,7 @@
 #include "stack.c"
 #include "queue.c"
 #include "array.c"
-
+#include "vector.c"
 
 static PyModuleDef gstructs = {
 	PyModuleDef_HEAD_INIT,
@@ -26,6 +26,9 @@ PyMODINIT_FUNC PyInit_gstructs(void) {
     if (PyType_Ready(&arrayType) < 0) {
 		return NULL;
 	}
+    if (PyType_Ready(&vectorType) < 0) {
+		return NULL;
+	}
 
 	module = PyModule_Create(&gstructs);
 
@@ -35,6 +38,8 @@ PyMODINIT_FUNC PyInit_gstructs(void) {
 	PyModule_AddObject(module, "queue", (PyObject*) &queueType);
 	Py_INCREF(&arrayType);
 	PyModule_AddObject(module, "array", (PyObject*) &arrayType);
+	Py_INCREF(&vectorType);
+	PyModule_AddObject(module, "vector", (PyObject*) &vectorType);
 
 	return module;
 }
