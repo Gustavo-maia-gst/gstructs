@@ -1,4 +1,5 @@
 #include <Python.h>
+#include <limits.h>
 #define MEMORY_ERROR PyErr_SetString(PyExc_MemoryError, "Failed to allocate memory"); return NULL
 #define INVALID_INDEX(i, max_i) (i < 0 || i >= max_i)
 
@@ -6,6 +7,7 @@
 #include "queue.c"
 #include "array.c"
 #include "vector.c"
+#include "maxHeap.c"
 
 static PyModuleDef gstructs = {
 	PyModuleDef_HEAD_INIT,
@@ -29,6 +31,9 @@ PyMODINIT_FUNC PyInit_gstructs(void) {
     if (PyType_Ready(&vectorType) < 0) {
 		return NULL;
 	}
+    if (PyType_Ready(&maxHeapType) < 0) {
+		return NULL;
+	}
 
 	module = PyModule_Create(&gstructs);
 
@@ -40,6 +45,8 @@ PyMODINIT_FUNC PyInit_gstructs(void) {
 	PyModule_AddObject(module, "array", (PyObject*) &arrayType);
 	Py_INCREF(&vectorType);
 	PyModule_AddObject(module, "vector", (PyObject*) &vectorType);
+	Py_INCREF(&maxHeapType);
+	PyModule_AddObject(module, "maxHeap", (PyObject*) &maxHeapType);
 
 	return module;
 }
